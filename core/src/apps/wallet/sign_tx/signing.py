@@ -80,21 +80,6 @@ async def check_tx_fee(tx: SignTx, keychain: seed.Keychain):
     else:
         hash143 = segwit_bip143.Bip143()  # BIP-0143 transaction hashing
 
-    multifp = multisig.MultisigFingerprint()  # control checksum of multisig inputs
-    weight = tx_weight.TxWeightCalculator(tx.inputs_count, tx.outputs_count)
-
-    total_in = 0  # sum of input amounts
-    segwit_in = 0  # sum of segwit input amounts
-    total_out = 0  # sum of output amounts
-    change_out = 0  # change output amount
-    wallet_path = []  # common prefix of input paths
-    segwit = {}  # dict of booleans stating if input is segwit
-
-    # output structures
-    txo_bin = TxOutputBinType()
-    tx_req = TxRequest()
-    tx_req.details = TxRequestDetailsType()
-
     for i in range(tx.inputs_count):
         progress.advance()
         # STAGE_REQUEST_1_INPUT
@@ -404,39 +389,6 @@ async def sign_tx(tx: SignTx, keychain: seed.Keychain):
                     writers.write_uint32(h_sign, tx.timestamp)
 
             writers.write_varint(h_sign, tx.inputs_count)
-
-            for i in range(tx.inputs_count):
-                # STAGE_REQUEST_4_INPUT
-                txi = await helpers.request_tx_input(tx_req, i)
-                input_check_wallet_path(txi, wallet_path)
-                writers.write_tx_input_check(h_second, txi)
-                if i == i_sign:
-                    txi_sign = txi
-                    key_sign = keychain.derive(txi.address_n, coin.curve_name)
-                    key_sign_pub = key_sign.public_key()
-                    # for the signing process the script_sig is equal
-                    # to the previous tx's scriptPubKey (P2PKH) or a redeem script (P2SH)
-                    if txi_sign.script_type == InputScriptType.SPENDMULTISIG:
-                        txi_sign.script_sig = scripts.output_script_multisig(
-                            multisig.multisig_get_pubkeys(txi_sign.multisig),
-                            txi_sign.multisig.m,
-                        )
-                    elif txi_sign.script_type == InputScriptType.SPENDADDRESS:
-                        txi_sign.script_sig = scripts.output_script_p2pkh(
-                            addresses.ecdsa_hash_pubkey(key_sign_pub, coin)
-                        )
-                        if coin.bip115:
-                            txi_sign.script_sig += scripts.script_replay_protection_bip115(
-                                txi_sign.prev_block_hash_bip115,
-                                txi_sign.prev_block_height_bip115,
-                            )
-                    else:
-                        raise SigningError(
-                            FailureType.ProcessError, "Unknown transaction type"
-                        )
-                else:
-                    txi.script_sig = bytes()
-                writers.write_tx_input(h_sign, txi)
 
             writers.write_varint(h_sign, tx.outputs_count)
 
