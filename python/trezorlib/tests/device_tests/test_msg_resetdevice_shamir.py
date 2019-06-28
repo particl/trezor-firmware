@@ -20,7 +20,6 @@ class TestMsgResetDeviceT2(TrezorTest):
     def test_reset_device_shamir(self):
         strength = 128
         member_threshold = 2
-        number_of_shares = 5
 
         def input_flow():
             # Confirm Reset
