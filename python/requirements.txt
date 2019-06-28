@@ -6,3 +6,4 @@ pyblake2>=0.9.3
 libusb1>=1.6.4
 construct>=2.9
 typing_extensions>=3.6
+-e git+https://github.com/trezor/python-shamir-mnemonic#egg=shamir_mnemonic
