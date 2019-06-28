@@ -48,6 +48,10 @@ async def reset_device(ctx, msg):
             if not await layout.confirm_backup_again(ctx):
                 msg.skip_backup = True
 
+    # if we are backing up the wallet, show warning message
+    if not msg.no_backup and not msg.skip_backup:
+        await layout.show_backup_warning(ctx, msg.slip39)
+
     # generate and display backup information for the master secret
     if not msg.no_backup and not msg.skip_backup:
         if msg.slip39:
@@ -75,9 +79,7 @@ async def reset_device(ctx, msg):
 
     # if we backed up the wallet, show success message
     if not msg.no_backup and not msg.skip_backup:
-        await layout.show_backup_warning(
-            ctx, "Backup is done!", "Finish backup", msg.slip39
-        )
+        await layout.show_backup_success(ctx, msg.slip39)
 
     return Success(message="Initialized")
 

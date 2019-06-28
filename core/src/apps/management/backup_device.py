@@ -16,7 +16,7 @@ async def backup_device(ctx, msg):
     slip39 = mnemonic_type == mnemonic.TYPE_SLIP39
 
     # warn user about mnemonic safety
-    await layout.show_backup_warning(ctx, "Back up your seed", "I understand", slip39)
+    await layout.show_backup_warning(ctx, slip39)
 
     storage.set_unfinished_backup(True)
     storage.set_backed_up()
@@ -27,5 +27,8 @@ async def backup_device(ctx, msg):
         await layout.bip39_show_and_confirm_mnemonic(ctx, mnemonic_secret.decode())
 
     storage.set_unfinished_backup(False)
+
+    # show success message
+    await layout.show_backup_success(ctx, slip39)
 
     return Success(message="Seed successfully backed up")

@@ -161,8 +161,19 @@ async def _show_confirmation_failure(ctx, share_index):
     )
 
 
-async def show_backup_warning(ctx, header: str, confirm_text: str, slip39=False):
-    text = Text(header, ui.ICON_NOCOPY)
+async def show_backup_success(ctx, slip39=False):
+    text = Text("Backup is done!", ui.ICON_NOCOPY)
+    if slip39:
+        text.normal("TODO")
+    else:
+        text.normal("TODO")
+    await require_confirm(
+        ctx, text, ButtonRequestType.ResetDevice, "Finish backup", cancel=None
+    )
+
+
+async def show_backup_warning(ctx, slip39=False):
+    text = Text("Back up your seed", ui.ICON_NOCOPY)
     if slip39:
         text.normal(
             "Never make a digital",
@@ -178,7 +189,7 @@ async def show_backup_warning(ctx, header: str, confirm_text: str, slip39=False)
             "it online!",
         )
     await require_confirm(
-        ctx, text, ButtonRequestType.ResetDevice, confirm_text, cancel=None
+        ctx, text, ButtonRequestType.ResetDevice, "I understand", cancel=None
     )
 
 
