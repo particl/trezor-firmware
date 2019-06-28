@@ -79,4 +79,7 @@ setup(
         "Programming Language :: Python :: 3 :: Only",
     ],
     cmdclass={"prebuild": PrebuildCommand},
+    dependency_links=[
+        "git+https://github.com/trezor/python-shamir-mnemonic#egg=shamir_mnemonic"
+    ],
 )
