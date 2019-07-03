@@ -6,6 +6,9 @@ from trezor.crypto import random, slip39
 
 from apps.common import cache
 
+if False:
+    from typing import Optional
+
 HOMESCREEN_MAXSIZE = 16384
 
 _STORAGE_VERSION = b"\x02"
@@ -48,64 +51,64 @@ _SLIP39_MNEMONICS   = const(0x03)  # SLIP-39 mnemonics namespace
 # fmt: on
 
 
-def set_slip39_in_progress(val: bool):
+def set_slip39_in_progress(val: bool) -> None:
     _set_bool(_SLIP39, _SLIP39_IN_PROGRESS, val)
 
 
-def is_slip39_in_progress():
+def is_slip39_in_progress() -> bool:
     return _get_bool(_SLIP39, _SLIP39_IN_PROGRESS)
 
 
-def set_slip39_identifier(identifier: int):
+def set_slip39_identifier(identifier: int) -> None:
     _set_uint16(_SLIP39, _SLIP39_IDENTIFIER, identifier)
 
 
-def get_slip39_identifier() -> int:
+def get_slip39_identifier() -> Optional[int]:
     return _get_uint16(_SLIP39, _SLIP39_IDENTIFIER)
 
 
-def set_slip39_threshold(threshold: int):
+def set_slip39_threshold(threshold: int) -> None:
     _set_uint8(_SLIP39, _SLIP39_THRESHOLD, threshold)
 
 
-def get_slip39_threshold() -> int:
+def get_slip39_threshold() -> Optional[int]:
     return _get_uint8(_SLIP39, _SLIP39_THRESHOLD)
 
 
-def set_slip39_remaining(remaining: int):
+def set_slip39_remaining(remaining: int) -> None:
     _set_uint8(_SLIP39, _SLIP39_REMAINING, remaining)
 
 
-def get_slip39_remaining() -> int:
+def get_slip39_remaining() -> Optional[int]:
     return _get_uint8(_SLIP39, _SLIP39_REMAINING)
 
 
-def set_slip39_words_count(count: int):
+def set_slip39_words_count(count: int) -> None:
     _set_uint8(_SLIP39, _SLIP39_WORDS_COUNT, count)
 
 
-def get_slip39_words_count() -> int:
+def get_slip39_words_count() -> Optional[int]:
     return _get_uint8(_SLIP39, _SLIP39_WORDS_COUNT)
 
 
-def set_slip39_iteration_exponent(exponent: int):
+def set_slip39_iteration_exponent(exponent: int) -> None:
     # TODO: check if not > 5 bits
     _set_uint8(_SLIP39, _SLIP39_ITERATION_EXPONENT, exponent)
 
 
-def get_slip39_iteration_exponent() -> int:
+def get_slip39_iteration_exponent() -> Optional[int]:
     return _get_uint8(_SLIP39, _SLIP39_ITERATION_EXPONENT)
 
 
-def set_slip39_mnemonic(index: int, mnemonic: str):
+def set_slip39_mnemonic(index: int, mnemonic: str) -> None:
     config.set(_SLIP39_MNEMONICS, index, mnemonic.encode())
 
 
-def get_slip39_mnemonic(index: int) -> str:
+def get_slip39_mnemonic(index: int) -> Optional[str]:
     m = config.get(_SLIP39_MNEMONICS, index)
     if m:
         return m.decode()
-    return False
+    return None
 
 
 def get_slip39_mnemonics() -> list:
@@ -117,7 +120,7 @@ def get_slip39_mnemonics() -> list:
     return mnemonics
 
 
-def clear_slip39_data():
+def clear_slip39_data() -> None:
     config.delete(_SLIP39, _SLIP39_IN_PROGRESS)
     config.delete(_SLIP39, _SLIP39_REMAINING)
     config.delete(_SLIP39, _SLIP39_THRESHOLD)
@@ -137,22 +140,22 @@ def _get_bool(app: int, key: int, public: bool = False) -> bool:
     return config.get(app, key, public) == _TRUE_BYTE
 
 
-def _set_uint8(app: int, key: int, val: int):
+def _set_uint8(app: int, key: int, val: int) -> None:
     config.set(app, key, val.to_bytes(1, "big"))
 
 
-def _get_uint8(app: int, key: int) -> int:
+def _get_uint8(app: int, key: int) -> Optional[int]:
     val = config.get(app, key)
     if not val:
         return None
     return int.from_bytes(val, "big")
 
 
-def _set_uint16(app: int, key: int, val: int):
+def _set_uint16(app: int, key: int, val: int) -> None:
     config.set(app, key, val.to_bytes(2, "big"))
 
 
-def _get_uint16(app: int, key: int) -> int:
+def _get_uint16(app: int, key: int) -> Optional[int]:
     val = config.get(app, key)
     if not val:
         return None
@@ -184,18 +187,18 @@ def is_initialized() -> bool:
     )
 
 
-def get_label() -> str:
+def get_label() -> Optional[str]:
     label = config.get(_APP, _LABEL, True)  # public
     if label is None:
         return None
     return label.decode()
 
 
-def get_mnemonic_secret() -> bytes:
+def get_mnemonic_secret() -> Optional[bytes]:
     return config.get(_APP, _MNEMONIC_SECRET)
 
 
-def get_mnemonic_type() -> int:
+def get_mnemonic_type() -> Optional[int]:
     return _get_uint8(_APP, _MNEMONIC_TYPE)
 
 
@@ -203,7 +206,7 @@ def has_passphrase() -> bool:
     return _get_bool(_APP, _USE_PASSPHRASE)
 
 
-def get_homescreen() -> bytes:
+def get_homescreen() -> Optional[bytes]:
     return config.get(_APP, _HOMESCREEN, True)  # public
 
 
@@ -218,7 +221,7 @@ def store_mnemonic(
     _init(needs_backup, no_backup)
 
 
-def _init(needs_backup=False, no_backup=False):
+def _init(needs_backup: bool = False, no_backup: bool = False) -> None:
     config.set(_APP, _VERSION, _STORAGE_VERSION)
     _set_bool(_APP, _NO_BACKUP, no_backup)
     if not no_backup:
@@ -297,11 +300,11 @@ def get_flags() -> int:
 def set_flags(flags: int) -> None:
     b = config.get(_APP, _FLAGS)
     if b is None:
-        b = 0
+        i = 0
     else:
-        b = int.from_bytes(b, "big")
-    flags = (flags | b) & 0xFFFFFFFF
-    if flags != b:
+        i = int.from_bytes(b, "big")
+    flags = (flags | i) & 0xFFFFFFFF
+    if flags != i:
         config.set(_APP, _FLAGS, flags.to_bytes(4, "big"))
 
 
@@ -327,12 +330,12 @@ def set_u2f_counter(cntr: int) -> None:
     config.set_counter(_APP, _U2F_COUNTER, cntr, True)  # writable when locked
 
 
-def wipe():
+def wipe() -> None:
     config.wipe()
     cache.clear()
 
 
-def init_unlocked():
+def init_unlocked() -> None:
     # Check for storage version upgrade.
     version = config.get(_APP, _VERSION)
     if version == b"\x01":
