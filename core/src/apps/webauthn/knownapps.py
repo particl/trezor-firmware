@@ -25,6 +25,8 @@ _knownapps = {
     "https://u2f.bin.coffee": "u2f.bin.coffee",
     # WebAuthn
     "www.dropbox.com": "Dropbox",
+    "secure.login.gov": "login.gov",
+    "login.microsoft.com": "Microsoft",
     "webauthn.bin.coffee": "webauthn.bin.coffee",
     "webauthn.io": "WebAuthn.io",
     "webauthn.me": "WebAuthn.me",
