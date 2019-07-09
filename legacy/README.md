@@ -1,6 +1,6 @@
 # Trezor One Bootloader and Firmware
 
-[![Build Status](https://travis-ci.org/trezor/trezor-mcu.svg?branch=master)](https://travis-ci.org/trezor/trezor-mcu) [![gitter](https://badges.gitter.im/trezor/community.svg)](https://gitter.im/trezor/community)
+[![Build Status](https://travis-ci.org/trezor/trezor-firmware.svg?branch=master)](https://travis-ci.org/trezor/trezor-firmware) [![gitter](https://badges.gitter.im/trezor/community.svg)](https://gitter.im/trezor/community)
 
 https://trezor.io/
 
@@ -10,8 +10,8 @@ Ensure that you have Docker installed. You can follow [Docker's installation ins
 
 Clone this repository:
 ```sh
-git clone https://github.com/trezor/trezor-mcu.git`
-cd trezor-mcu
+git clone --recursive https://github.com/trezor/trezor-firmware.git`
+cd trezor-firmware
 ```
 
 Use the `build.sh` command to build the images.
@@ -56,7 +56,7 @@ Step 3 should produce the same sha256 fingerprint like your local build (for the
 
 *Note: if your device is on the latest bootloader version and you flash custom firmware then you will receive a hard fault warning when booting the firmware image. To avoid this issue, just remove the code in startup.s added by [this commit](https://github.com/trezor/trezor-firmware/commit/222c9ea46c7574cb52d4713c481438a32b85e692#diff-178d0ab7c4debbcf430a0fad8fa06a5c).*
 
-## Building for development
+## Building for development (without Docker)
 
 If you want to build device firmware, make sure you have the
 [GNU ARM Embedded toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads) installed.
