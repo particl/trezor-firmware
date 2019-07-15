@@ -16,7 +16,7 @@
   "xpub_magic": 2401087160,
   "xpub_magic_segwit_p2sh": 28471030,
   "xpub_magic_segwit_native": 78792518,
-  "bech32_prefix": "bc",
+  "bech32_prefix": "ph",
   "cashaddr_prefix": null,
   "slip44": 44,
   "segwit": true,
@@ -31,7 +31,7 @@
     "High": 200
   },
   "dust_limit": 546,
-  "blocktime_seconds": 600,
+  "blocktime_seconds": 120,
   "uri_prefix": "particl",
   "min_address_length": 27,
   "max_address_length": 34,
